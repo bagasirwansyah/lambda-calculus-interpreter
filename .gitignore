@@ -1,3 +1,5 @@
 dist
+dist-newstyle/
+.DS_Store
 .cabal-sandbox
 screencast.mov
