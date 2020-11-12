@@ -13,6 +13,9 @@ varName = letter
 arguments :: GenParser Char () [Name]
 arguments = many1 varName
 
+numbers :: GenParser Char () Name
+numbers = digit
+
 variable :: LambdaParser
 variable = do
               variable <- varName
@@ -26,6 +29,11 @@ abstraction = do
                  body <- lambdaExpr
                  return $ foldr Abs body args
 
+number :: LambdaParser
+number = do
+            number <- numbers
+            return(Num number)
+
 brackets :: LambdaParser
 brackets = between (char '(') (char ')') lambdaExpr
 
@@ -33,6 +41,7 @@ lambdaTerm :: LambdaParser
 lambdaTerm =    brackets
             <|> abstraction
             <|> variable
+            <|> number
 
 lambdaExpr :: LambdaParser
 lambdaExpr  = do

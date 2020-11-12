@@ -56,6 +56,7 @@ canApply otherwise   _ = Nothing
 -- Normal Order :- Leftmost
 normalOrderRedex :: LExpr -> Maybe LExpr
 normalOrderRedex (Var _)       = Nothing
+normalOrderRedex (Num _)       = Nothing
 normalOrderRedex (Abs x expr)  = normalOrderRedex expr
 normalOrderRedex (App l r)     = msum [canApply l r, normalOrderRedex l, normalOrderRedex r]
 

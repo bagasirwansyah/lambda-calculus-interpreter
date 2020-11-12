@@ -3,11 +3,13 @@ module Syntax where
 import Data.List
 import Data.Maybe
 
-type Name = Char
+type Name   = Char
+type Number = Char
 
 data LExpr =  Abs Name LExpr
             | App LExpr LExpr
             | Var Name
+            | Num Number
 
 data DExpr =  DVal Int
             | DApp DExpr DExpr
@@ -15,7 +17,6 @@ data DExpr =  DVal Int
 
 
 data LTree =  Node (String, LExpr) [LTree]
-
 
 
 debruijn :: LExpr -> DExpr
