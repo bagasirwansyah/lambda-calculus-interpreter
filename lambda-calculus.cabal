@@ -26,10 +26,12 @@ license-file:        LICENSE
 
 -- The package author(s).
 author:              Ema93sh
+author:              Bagas Irwansyah
 
 -- An email address to which users can send suggestions, bug reports, and
 -- patches.
 maintainer:          m.magesh.66@gmail.com
+maintainer:          bagasirwansyah@yahoo.com
 
 -- A copyright notice.
 -- copyright:
@@ -51,7 +53,7 @@ executable lambda-calculus
   main-is:             Main.hs
 
   -- Modules included in this executable, other than Main.
-  -- other-modules:
+  other-modules:       Evaluator, Parser, Pretty, Syntax, Trace
 
   -- LANGUAGE extensions used by modules in this package.
   -- other-extensions:
