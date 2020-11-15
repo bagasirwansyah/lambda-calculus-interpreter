@@ -16,6 +16,11 @@ import Control.Monad.Trans (lift)
 strategy "normal"      = normalOrderRedex
 strategy "applicative" = applicativeOrderRedex
 
+-- Sugar code taken from
+-- https://stackoverflow.com/questions/4597820/does-haskell-have-list-slices-i-e-python
+(!>) = drop
+(<!) = flip take
+
 evaluate :: String -> String -> String
 evaluate expr s = case parseExpr expr of
                     Left err -> show "Parse Error!"
@@ -35,6 +40,16 @@ debruijnIndex :: String -> String
 debruijnIndex expr = case parseExpr expr of
                     Left err -> show "Parse Error!"
                     Right e  -> show $ debruijn e
+
+translateInput :: String -> String
+translateInput str
+    | '*' `elem` str = rewriteStar (map (\x -> x+1) (elemIndices '*' str)) str
+    | otherwise      = convertInput str
+
+    where rewriteStar :: [Int] -> String -> String
+          rewriteStar []     str = str
+          rewriteStar _      ""  = ""
+          rewriteStar (x:xs) str = convertInput ("*" ++ (0 !> str <! (x-1)) ++ "(" ++ (rewriteStar (map (\a -> a - x) xs) (x !> str <! length str)) ++ ")")
 
 convertInput :: String -> String
 convertInput []           = []
@@ -77,6 +92,6 @@ loop = do
        (":d":e:_)      -> do outputStrLn $ debruijnIndex e; loop
        (":eq":e1:e2:_) -> do outputStrLn $ alphaEq e1 e2; loop
        ("get":_)       -> do v <- lift get; outputStrLn $ "The reduction strategy is " ++ show v; loop
-       [expr]          -> do s <- lift get; outputStrLn (evaluate (convertInput expr) s); loop
+       [expr]          -> do s <- lift get; outputStrLn (evaluate (translateInput expr) s); loop
        (e1:e2:_)       -> do outputStrLn (explainExpr e1 e2); loop
        _               -> do outputStrLn "Empty!"; loop
