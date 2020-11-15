@@ -43,13 +43,13 @@ debruijnIndex expr = case parseExpr expr of
 
 translateInput :: String -> String
 translateInput str
-    | '*' `elem` str = rewriteStar (map (\x -> x+1) (elemIndices '*' str)) str
+    | '*' `elem` str = convertInput (rewriteStar (map (\x -> x+1) (elemIndices '*' str)) str)
     | otherwise      = convertInput str
 
     where rewriteStar :: [Int] -> String -> String
           rewriteStar []     str = str
           rewriteStar _      ""  = ""
-          rewriteStar (x:xs) str = convertInput ("*" ++ (0 !> str <! (x-1)) ++ "(" ++ (rewriteStar (map (\a -> a - x) xs) (x !> str <! length str)) ++ ")")
+          rewriteStar (x:xs) str = "*" ++ (0 !> str <! (x-1)) ++ "(" ++ (rewriteStar (map (\a -> a - x) xs) (x !> str <! length str)) ++ ")"
 
 convertInput :: String -> String
 convertInput []           = []
