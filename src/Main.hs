@@ -43,13 +43,23 @@ debruijnIndex expr = case parseExpr expr of
 
 translateInput :: String -> String
 translateInput str
-    | '*' `elem` str = convertInput (rewriteStar (map (\x -> x+1) (elemIndices '*' str)) str)
-    | otherwise      = convertInput str
+    | '*' `elem` str                              = convertInput (rewriteStar (map (\x -> x+1) (elemIndices '*' str)) str)
+    | True `elem` (map (\x -> x `elem` "/&") str) = convertInput (rewriteBool (map (\x -> x+1) (elemIndices '&' str)) (map (\x -> x+1) (elemIndices '/' str)) str)
+    | otherwise                                   = convertInput str
 
     where rewriteStar :: [Int] -> String -> String
-          rewriteStar []     str = str
           rewriteStar _      ""  = ""
+          rewriteStar []     str = str
           rewriteStar (x:xs) str = "*" ++ (0 !> str <! (x-1)) ++ "(" ++ (rewriteStar (map (\a -> a - x) xs) (x !> str <! length str)) ++ ")"
+
+          rewriteBool :: [Int] -> [Int] -> String -> String
+          rewriteBool _      _      ""  = ""
+          rewriteBool []     []     str = str
+          rewriteBool (x:xs) []     str = "&" ++ (0 !> str <! (x-1)) ++ "(" ++ (rewriteBool (map (\a -> a - x) xs) [] (x !> str <! length str)) ++ ")"
+          rewriteBool []     (y:ys) str = "/" ++ (0 !> str <! (y-1)) ++ "(" ++ (rewriteBool [] (map (\a -> a - y) ys) (y !> str <! length str)) ++ ")"
+          rewriteBool (x:xs) (y:ys) str
+              | x < y     = "&" ++ (0 !> str <! (x-1)) ++ "(" ++ (rewriteBool (map (\a -> a - x) xs) (map (\a -> a - x) (y:ys)) (x !> str <! length str)) ++ ")"
+              | otherwise = "/" ++ (0 !> str <! (y-1)) ++ "(" ++ (rewriteBool (map (\a -> a - y) (x:xs)) (map (\a -> a - y) ys) (y !> str <! length str)) ++ ")"
 
 convertInput :: String -> String
 convertInput []           = []
