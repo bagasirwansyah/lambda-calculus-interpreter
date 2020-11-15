@@ -40,7 +40,7 @@ convertInput :: String -> String
 convertInput []           = []
 convertInput (x:xs) 
     | x == '^'            = convertInput' "" xs
-    | x `elem` ['0'..'9'] = "##"
+    | x `elem` ['0'..'9'] = "\\"
     | x == '+'            = "(λwyx.y(wyx))"        ++ convertInput xs
     | x == '*'            = "(λxyz.x(yz))"         ++ convertInput xs
     | x == 'T'            = "(λxy.x)"              ++ convertInput xs
@@ -79,4 +79,4 @@ loop = do
        ("get":_)       -> do v <- lift get; outputStrLn $ "The reduction strategy is " ++ show v; loop
        [expr]          -> do s <- lift get; outputStrLn (evaluate (convertInput expr) s); loop
        (e1:e2:_)       -> do outputStrLn (explainExpr e1 e2); loop
-       _               -> do outputStrLn "huh?"; loop
+       _               -> do outputStrLn "Empty!"; loop

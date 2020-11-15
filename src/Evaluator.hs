@@ -124,7 +124,7 @@ exprs l@(Node (t,e) []) = [(t,e)]
 exprs  (Node _ xs)  = concatMap exprs xs
 
 findExpr :: LTree -> LExpr -> String
-findExpr tree expr = maybe "Not found" fst (find (\(t, e) ->  alphaEquivalence e expr ) (exprs tree))
+findExpr tree expr = maybe "Cannot be Determined" fst (find (\(t, e) ->  alphaEquivalence e expr ) (exprs tree))
 
 explain :: LExpr -> LExpr -> (LExpr -> Maybe LExpr) -> String
 explain e1 e2 strategy
