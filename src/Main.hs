@@ -37,20 +37,28 @@ debruijnIndex expr = case parseExpr expr of
                     Right e  -> show $ debruijn e
 
 convertInput :: String -> String
-convertInput []     = []
+convertInput [] = []
 convertInput (x:xs) 
-        | x `elem` ['0'..'9'] = convertNumeral x       ++ convertInput xs
-        | x == '+'            = "(λwyx.y(wyx))"        ++ convertInput xs
-        | x == '*'            = "(λxyz.x(yz))"         ++ convertInput xs
-        | x == 'T'            = "(λxy.x)"              ++ convertInput xs
-        | x == 'F'            = "(λxy.y)"              ++ convertInput xs
-        | x == '&'            = "(λxy.xy(λuv.v))"      ++ convertInput xs
-        | x == '/'            = "(λxy.x(λuv.u)y)"      ++ convertInput xs
-        | x == '~'            = "(λx.x(λuv.v)(λab.a))" ++ convertInput xs
-        | otherwise           = [x]                    ++ convertInput xs
+    | x == '^'  = convertInput' "" xs
+    | x == '+'  = "(λwyx.y(wyx))"        ++ convertInput xs
+    | x == '*'  = "(λxyz.x(yz))"         ++ convertInput xs
+    | x == 'T'  = "(λxy.x)"              ++ convertInput xs
+    | x == 'F'  = "(λxy.y)"              ++ convertInput xs
+    | x == '&'  = "(λxy.xy(λuv.v))"      ++ convertInput xs
+    | x == '/'  = "(λxy.x(λuv.u)y)"      ++ convertInput xs
+    | x == '~'  = "(λx.x(λuv.v)(λab.a))" ++ convertInput xs
+    | otherwise = [x]                    ++ convertInput xs
+    
+    where convertInput' :: String -> String -> String
+          convertInput' []  []      = []
+          convertInput' str []      = convertNumeral (read str :: Int)
+          convertInput' str (x:xs)
+              | x `elem` ['0'..'9'] = convertInput' (str ++ [x]) xs
+              | otherwise           = convertNumeral (read str :: Int) ++ convertInput (x:xs)
 
-convertNumeral :: Char -> String
-convertNumeral x = "(λsz." ++ (concat . replicate (digitToInt x)) "s(" ++ "z" ++ (concat . replicate (digitToInt x)) ")" ++ ")"
+
+convertNumeral :: Int -> String
+convertNumeral x = "(λsz." ++ (concat . replicate x) "s(" ++ "z" ++ (concat . replicate (x + 1)) ")"
 
 main =  runStateT (runInputT defaultSettings loop) "normal"
 
