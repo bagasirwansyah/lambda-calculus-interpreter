@@ -60,7 +60,7 @@ rewriteBool (x:xs) (y:ys) str
     | otherwise = "/" ++ (0 !> str <! (y-1)) ++ "(" ++ (rewriteBool (map (\a -> a - y) (x:xs)) (map (\a -> a - y) ys) (y !> str <! length str)) ++ ")"
 ```
 
-These are the code I used to decode the infix operator as I said above.
+These are the code I used to decode the infix operator as I said above.<br/>
 example "1\*2\*3\*4\*5"<br/>
 will be "*1(2\*3\*4\*5)"<br/>
 will be "*1(*2(3\*4\*5))"<br/>
@@ -76,7 +76,7 @@ will be "/F(&T(/T(F)))"<br/>
 onvertInput :: String -> String
 convertInput []           = []
 convertInput (x:xs) 
-    | x == '^'            = convertInput aksen "" xs
+    | x == '^'            = convertInput-aksen "" xs
     | x `elem` ['0'..'9'] = "\\"
     | x == '+'            = "(λwyx.y(wyx))"        ++ convertInput xs
     | x == '*'            = "(λxyz.x(yz))"         ++ convertInput xs
@@ -88,11 +88,11 @@ convertInput (x:xs)
     | otherwise           = [x]                    ++ convertInput xs
 
         
-    where convertInput aksen :: String -> String -> String
-          convertInput aksen []  []      = []
-          convertInput aksen str []      = convertNumeral (read str :: Int)
-          convertInput aksen str (x:xs)
-              | x `elem` ['0'..'9'] = convertInput aksen (str ++ [x]) xs
+    where convertInput-aksen :: String -> String -> String
+          convertInput-aksen []  []      = []
+          convertInput-aksen str []      = convertNumeral (read str :: Int)
+          convertInput-aksen str (x:xs)
+              | x `elem` ['0'..'9'] = convertInput-aksen (str ++ [x]) xs
               | otherwise           = convertNumeral (read str :: Int) ++ convertInput (x:xs)
 ```
 
