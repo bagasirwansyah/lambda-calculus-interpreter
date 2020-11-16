@@ -42,7 +42,7 @@ translateInput str
     | otherwise                                   = convertInput str
 ```
 
-This code will take the first input, and check wether the symbol '*', '/' and '&' is used, as my code enables them to be used as infix operator, I would decode the input into normal equation '3*2' -> '*3(2)'.
+This code will take the first input, and check wether the symbol '\*', '/' and '&' is used, as my code enables them to be used as infix operator, I would decode the input into normal equation '3\*2' -> '*3(2)'.
 
 ```bash
 where rewriteStar :: [Int] -> String -> String
@@ -61,16 +61,16 @@ rewriteBool (x:xs) (y:ys) str
 ```
 
 These are the code I used to decode the infix operator as I said above.
-example "1*2*3*4*5"
-will be "*1(2*3*4*5)"
-will be "*1(*2(3*4*5))"
-will be "*1(*2(*3(4*5)))"
-will be "*1(*2(*3(*4(5))))"
+example "1\*2\*3\*4\*5"<br/>
+will be "*1(2\*3\*4\*5)"<br/>
+will be "*1(*2(3\*4\*5))"<br/>
+will be "*1(*2(*3(4\*5)))"<br/>
+will be "*1(*2(*3(*4(5))))"<br/>
 
-example "F/T&T/F"
-will be "/F(T&T/F)"
-will be "/F(&T(T/F))"
-will be "/F(&T(/T(F)))"
+example "F/T&T/F"<br/>
+will be "/F(T&T/F)"<br/>
+will be "/F(&T(T/F))"<br/>
+will be "/F(&T(/T(F)))"<br/>
 
 ```bash
 onvertInput :: String -> String
@@ -103,7 +103,7 @@ convertNumeral :: Int -> String
 convertNumeral x = "(λsz." ++ (concat . replicate x) "s(" ++ "z" ++ (concat . replicate (x + 1)) ")"
 ```
 
-This is how I convert numeral into lambda expression, I use replicate to write over and over again, equivalent to the numeral.
+This is how I convert numeral into lambda expression, I use replicate to write over and over until, equivalent to the numeral.
 
 ## How to use it
 
